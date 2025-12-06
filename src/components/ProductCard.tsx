@@ -8,7 +8,7 @@ import { useState } from "react";
 
 export default function ProductCard({ product }: { product: ProductType }) {
   const [productTypes, setProductTypes] = useState({
-    size: product.sizes[0],
+    size: "",
     color: product.colors[0],
   });
 
@@ -44,13 +44,13 @@ export default function ProductCard({ product }: { product: ProductType }) {
             <select
               name="size"
               id="size"
-              value={productTypes.size}
+              defaultValue={productTypes.size || ""}
               className="px-2 py-1 rounded-lg bg-gray-100 cursor-pointer hover:bg-gray-200 text-gray-500 outline-none text-xs ring ring-gray-300"
               onChange={(e) =>
                 handleProductTypeChange({ type: "size", value: e.target.value })
               }
             >
-              <option value="" disabled>
+              <option value="" disabled hidden>
                 Select Size
               </option>
               {product.sizes.map((size) => (

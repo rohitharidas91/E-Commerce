@@ -19,10 +19,11 @@ export default function Sort() {
       <select
         name="sort"
         id="sort"
+        value={searchParams.get("sort") || ""}
         onChange={(e) => handleSort(e.target.value)}
         className="ring-1 ring-gray-300 shadow-md rounded-md px-2 py-1 focus:outline-none focus:border-gray-400"
       >
-        <option value="" selected disabled hidden>
+        <option value=""disabled hidden>
           Select Sort
         </option>
         <option value="price-asc">Price: Low to High</option>
