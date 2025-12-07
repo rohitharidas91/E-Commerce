@@ -1,5 +1,6 @@
 "use client";
 
+import CartItem from "@/components/CartItem";
 import { CartItemsType } from "@/types";
 import { ArrowRightIcon } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -97,7 +98,7 @@ export default function CartPage() {
           {steps.map((step) => (
             <div
               key={step.id}
-              className={`flex items-center justify-center gap-4 border-b-2 pb-4 w-full md:w-1/3${
+              className={`flex items-center justify-center gap-4 border-b-2 pb-4 w-full md:w-1/3 ${
                 activeStep === step.id ? "border-gray-800" : "border-gray-200"
               }`}
             >
@@ -123,14 +124,26 @@ export default function CartPage() {
           ))}
         </div>
       </div>
-      {/* Steps and details*/}
+      {/* Details*/}
       <div className="w-full flex flex-col lg:flex-row justify-between gap-16">
-        {/* Steps */}
-        <div className="w-full lg:w-7/12 border-r-2 border-gray-200 shadow-md p-8 rounded-lg">
-          1
+        {/* Cart Details */}
+        <div className="w-full lg:w-7/12 border-r-2 border-gray-200 shadow-md p-4 rounded-lg">
+          {activeStep === 1 ? (
+            <div className="flex flex-col gap-2">
+              {cartItems.map((item) => (
+                <CartItem key={item.id} cartItem={item} />
+              ))}
+            </div>
+          ) : activeStep === 2 ? (
+            <p>Shipping</p>
+          ) : activeStep === 3 ? (
+            <p>Payment</p>
+          ) : (
+            <p>Thank you</p>
+          )}
         </div>
-        {/* Details */}
-        <div className="w-full lg:w-5/12 border-r-2 border-gray-200 shadow-md p-8 rounded-lg">
+        {/* Order Details */}
+        <div className="w-full lg:w-5/12 border-r-2 border-gray-200 shadow-md p-8 rounded-lg h-max ">
           <h2 className="text-xl font-medium pb-8">Cart Details</h2>
           <div className="flex flex-col text-gray-500 gap-4 pb-8 text-sm">
             <div className="flex items-center justify-between">
