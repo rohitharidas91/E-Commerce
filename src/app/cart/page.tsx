@@ -1,24 +1,14 @@
 "use client";
 
 import CartItem from "@/components/CartItem";
-import { CartItemsType } from "@/types";
+import CartSteps from "@/components/CartSteps";
+import OrderSummary from "@/components/OrderSummary";
+import PaymentForm from "@/components/PaymentForm";
+import ShippingForm from "@/components/ShippingForm";
+import { CartItemsType, ShippingFormType } from "@/types";
 import { ArrowRightIcon } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
-
-const steps = [
-  {
-    id: 1,
-    title: "Shopping Cart",
-  },
-  {
-    id: 2,
-    title: "Shipping Details",
-  },
-  {
-    id: 3,
-    title: "Payment Method",
-  },
-];
+import { useState } from "react";
 
 //Temporary
 const cartItems: CartItemsType = [
@@ -78,6 +68,8 @@ const cartItems: CartItemsType = [
 ];
 
 export default function CartPage() {
+  const [shippingFormData, setShippingFormData] =
+    useState<ShippingFormType | null>(null);
   const searchParams = useSearchParams();
   const router = useRouter();
   const activeStep = parseInt(searchParams.get("step") || "1");
@@ -88,42 +80,13 @@ export default function CartPage() {
     0
   );
   const total = subtotal - discount + shippingFee;
+  console.log(shippingFormData);
   return (
     <div className="mt-12 flex flex-col items-center justify-center gap-8">
       {/* Title */}
       <h1 className="text-2xl font-medium">Ready to checkout?</h1>
       {/* Steps */}
-      <div className="w-full">
-        <div className="flex flex-col md:flex-row items-center justify-between gap-16">
-          {steps.map((step) => (
-            <div
-              key={step.id}
-              className={`flex items-center justify-center gap-4 border-b-2 pb-4 w-full md:w-1/3 ${
-                activeStep === step.id ? "border-gray-800" : "border-gray-200"
-              }`}
-            >
-              <div
-                className={`w-8 h-8 flex items-center justify-center rounded-full text-lg font-medium ${
-                  activeStep === step.id
-                    ? "bg-gray-800 text-white"
-                    : "bg-gray-200 text-gray-500"
-                }`}
-              >
-                {step.id}
-              </div>
-              <p
-                className={`text-sm ${
-                  activeStep === step.id
-                    ? "text-gray-800 font-medium"
-                    : "text-gray-500"
-                }`}
-              >
-                {step.title}
-              </p>
-            </div>
-          ))}
-        </div>
-      </div>
+      <CartSteps activeStep={activeStep} />
       {/* Details*/}
       <div className="w-full flex flex-col lg:flex-row justify-between gap-16">
         {/* Cart Details */}
@@ -135,46 +98,33 @@ export default function CartPage() {
               ))}
             </div>
           ) : activeStep === 2 ? (
-            <p>Shipping</p>
-          ) : activeStep === 3 ? (
-            <p>Payment</p>
+            <ShippingForm setShippingFormData={setShippingFormData} />
+          ) : activeStep === 3 && shippingFormData ? (
+            <PaymentForm />
           ) : (
-            <p>Thank you</p>
-          )}
-        </div>
-        {/* Order Details */}
-        <div className="w-full lg:w-5/12 border-r-2 border-gray-200 shadow-md p-8 rounded-lg h-max ">
-          <h2 className="text-xl font-medium pb-8">Cart Details</h2>
-          <div className="flex flex-col text-gray-500 gap-4 pb-8 text-sm">
-            <div className="flex items-center justify-between">
-              <p>Subtotal:</p>
-              <p className="font-medium">${subtotal.toFixed(2)}</p>
-            </div>
-            <div className="flex items-center justify-between text-green-700">
-              <p>Discount:</p>
-              <p className="font-medium">-${discount.toFixed(2)}</p>
-            </div>
-            <div className="flex items-center justify-between">
-              <p>Shipping fee:</p>
-              <p className="font-medium">${shippingFee.toFixed(2)}</p>
-            </div>
-            <div className="flex items-center justify-between border-t-2 border-gray-200 pt-4">
-              <p className="font-medium text-gray-800 text-lg">Total:</p>
-              <p className="font-medium text-gray-800 text-lg">
-                ${total.toFixed(2)}
+            <div>
+              <p className="text-red-500 mb-4">
+                Error! Please fill in shipping details
               </p>
+              <button
+                onClick={() => router.push("/cart?step=2", { scroll: false })}
+                className="w-full py-2 px-4 bg-gray-500 text-white rounded-lg cursor-pointer flex items-center justify-center gap-2 hover:bg-gray-900 transition-colors transition-duration-300"
+              >
+                Go to shipping details
+              </button>
             </div>
-          </div>
-          {activeStep === 1 && (
-            <button
-              onClick={() => router.push("/cart?step=2", { scroll: false })}
-              className="w-full py-2 px-4 bg-gray-500 text-white rounded-lg cursor-pointer flex items-center justify-center gap-2 hover:bg-gray-900 transition-colors transition-duration-300"
-            >
-              Continue
-              <ArrowRightIcon />
-            </button>
           )}
         </div>
+
+        {/* Order Summary */}
+        <OrderSummary
+          subtotal={subtotal}
+          discount={discount}
+          shippingFee={shippingFee}
+          total={total}
+          activeStep={activeStep}
+          router={router}
+        />
       </div>
     </div>
   );
