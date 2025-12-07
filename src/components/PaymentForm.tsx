@@ -1,7 +1,8 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { paymentFormSchema, PaymentFormType } from "@/types";
-import { ArrowRightIcon } from "lucide-react";
+import { ArrowRightIcon, ShoppingCart } from "lucide-react";
+import Image from "next/image";
 
 export default function PaymentForm() {
   const {
@@ -94,12 +95,17 @@ export default function PaymentForm() {
             </div>
           </div>
         </div>
+        <div className="flex items-center gap-2 m-4">
+            <Image src="/klarna.png" alt="payment" width={50} height={25} className="rounded-lg"/>
+            <Image src="/cards.png" alt="payment" width={50} height={25} className="rounded-lg"/>
+            <Image src="/stripe.png" alt="payment" width={50} height={25} className="rounded-lg"/>
+        </div>
         <button
           type="submit"
           className="w-full py-2 px-4 bg-gray-500 text-white rounded-lg cursor-pointer flex items-center justify-center gap-2 hover:bg-gray-900 transition-colors transition-duration-300"
         >
-          Confirm Payment
-          <ArrowRightIcon size={16} />
+          Confirm Order
+          <ShoppingCart size={16} />
         </button>
       </form>
     </div>

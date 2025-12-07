@@ -3,8 +3,10 @@
 import { ProductType } from "@/types";
 import Link from "next/link";
 import Image from "next/image";
-import { CheckIcon, ShoppingCartIcon } from "lucide-react";
+import { ShoppingCartIcon } from "lucide-react";
 import { useState } from "react";
+import useCartStore from "@/stores/cartStore";
+import { toast } from "react-toastify";
 
 export default function ProductCard({ product }: { product: ProductType }) {
   const [productTypes, setProductTypes] = useState({
@@ -20,6 +22,20 @@ export default function ProductCard({ product }: { product: ProductType }) {
     value: string;
   }) => {
     setProductTypes({ ...productTypes, [type]: value });
+  };
+  const { addToCart } = useCartStore();
+  const handleAddToCart = () => {
+    if (!productTypes.size || !productTypes.color) {
+      toast.error("Please select a size and a color");
+      return;
+    }
+    addToCart({
+      ...product,
+      quantity: 1,
+      selectedSize: productTypes.size,
+      selectedColor: productTypes.color,
+    });
+    toast.success("Product added to cart");
   };
   return (
     <div className="shadow-gray-200 shadow-lg rounded-lg overflow-hidden">
@@ -82,7 +98,10 @@ export default function ProductCard({ product }: { product: ProductType }) {
         {/*Price and add to cart*/}
         <div className="flex flex-col md:flex-row items-center gap-4 justify-between ">
           <p className="font-medium">${product.price.toFixed(2)}</p>
-          <button className="flex flex-row ring-2 ring-gray-200 items-center gap-4 px-4 py-1 rounded-lg hover:ring-green-200 hover:bg-gray-700 hover:text-white transition-all duration-300 cursor-pointer">
+          <button
+            onClick={() => handleAddToCart()}
+            className="flex flex-row ring-2 ring-gray-200 items-center gap-4 px-4 py-1 rounded-lg hover:ring-green-200 hover:bg-gray-700 hover:text-white transition-all duration-300 cursor-pointer"
+          >
             <ShoppingCartIcon className="w-4 h-4" />
             Add to Cart
           </button>

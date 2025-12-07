@@ -45,7 +45,12 @@ export const paymentFormSchema = z.object({
     .min(16, "Card number must be at least 16 digits long")
     .max(16, "Card number must be at most 16 digits long")
     .regex(/^[0-9]+$/, "Card number must contain only numbers"),
-  expirayDate: z.string().regex(/^(0[1-9]|1[0-2])\/\d{2}$/, "Expiration date must be in the format MM/YY"),
+  expirayDate: z
+    .string()
+    .regex(
+      /^(0[1-9]|1[0-2])\/\d{2}$/,
+      "Expiration date must be in the format MM/YY"
+    ),
   cvv: z
     .string()
     .min(3, "CVV must be at least 3 digits long")
@@ -54,3 +59,13 @@ export const paymentFormSchema = z.object({
 });
 
 export type PaymentFormType = z.infer<typeof paymentFormSchema>;
+
+export type CartStoreStateType = {
+  cart: CartItemsType;
+};
+
+export type CartStoreActionsType = {
+  addToCart: (item: CartItemType) => void;
+  removeFromCart: (item: CartItemType) => void;
+  clearCart: () => void;
+};

@@ -3,8 +3,15 @@
 import Image from "next/image";
 import { CartItemType } from "@/types";
 import { Trash2Icon } from "lucide-react";
+import useCartStore from "@/stores/cartStore";
+import { toast } from "react-toastify";
 
 export default function CartItem({ cartItem }: { cartItem: CartItemType }) {
+  const { removeFromCart } = useCartStore();
+  const handleRemoveFromCart = () => {
+    removeFromCart(cartItem);
+    toast.success("Product removed from cart");
+  };
   return (
     <div className="flex items-center justify-between gap-8 border-b-2 border-gray-200 pb-4 last:border-b-0">
       {/* Image */}
@@ -40,7 +47,10 @@ export default function CartItem({ cartItem }: { cartItem: CartItemType }) {
       </div>
       {/* Actions */}
       <div className="flex items-center gap-2">
-        <button className="p-2 border-2 border-gray-200 bg-red-200 rounded-full text-red-500 hover:bg-red-500 hover:text-red-200 cursor-pointer transition-all duration-300">
+        <button
+          onClick={() => handleRemoveFromCart()}
+          className="p-2 border-2 border-gray-200 bg-red-200 rounded-full text-red-500 hover:bg-red-500 hover:text-red-200 cursor-pointer transition-all duration-300"
+        >
           <Trash2Icon size={16} />
         </button>
       </div>
